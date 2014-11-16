@@ -1,10 +1,10 @@
 module Eligible
-  class Payment < APIResource
+  class Payers < APIResource
 
     class << self
 
       def get(params, api_key=nil)        
-        response, api_key = Eligible.request(:get, "/claims/#{params[:reference_id]}/payment_status.json", api_key, params)
+        response, api_key = Eligible.request(:get, "/payers.json", api_key, params)
         Util.convert_to_eligible_object(response, api_key)
       end
 
