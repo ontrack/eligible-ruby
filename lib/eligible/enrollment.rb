@@ -12,12 +12,23 @@ module Eligible
         response, api_key = Eligible.request(:post, "/enrollment_npis.json", api_key, params)
         Util.convert_to_eligible_object(response, api_key)
       end
-      
+
       def update(params, api_key=nil)
         response, api_key = Eligible.request(:put, "/enrollment_npis/#{params[:enrollment_npi_id]}.json", api_key, params)
         Util.convert_to_eligible_object(response, api_key)
-      end 
+      end
 
+      def download_received_pdf(params, api_key=nil)
+        response, api_key = Eligible.request(:get, "/enrollment_npis/#{params[:enrollment_npi_id]}/received_pdf/download", api_key, params.merge(
+          format: "x12"
+        ))
+        response
+      end
+
+      def create_original_signature_pdf(params, api_key=nil)
+        response, api_key = Eligible.request(:post, "/enrollment_npis/#{params[:enrollment_npi_id]}/original_signature_pdf", api_key, params)
+        Util.convert_to_eligible_object(response, api_key)
+      end
     end
 
     def enrollment_npis
