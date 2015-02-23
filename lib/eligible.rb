@@ -90,7 +90,12 @@ module Eligible
 
     # GET requests, parameters on the query string
     # POST requests, parameters as json in the body
-    url = self.api_url(url)
+    url = if _api_base = params.delete(:_api_base)
+      "#{_api_base}#{url}"
+    else
+      self.api_url(url)
+    end
+
     case method.to_s.downcase.to_sym
       when :get, :head
         url += "?api_key=#{api_key}"
@@ -101,7 +106,13 @@ module Eligible
         url +="&test=#{test}"
         payload = nil
       else
-        payload = Eligible::JSON.dump(params.merge!({ 'api_key' => api_key, 'test' => test }))
+        params.merge!({ 'api_key' => api_key, 'test' => test })
+
+        payload = if _no_json_payload = params.delete(:_no_json_payload)
+          params
+        else
+          Eligible::JSON.dump(params)
+        end
     end
 
     begin
@@ -228,4 +239,3 @@ module Eligible
   end
 
 end
-
